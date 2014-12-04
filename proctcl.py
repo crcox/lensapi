@@ -10,7 +10,7 @@ class ScriptWriter:
             pat = r"([a-zA-Z_]+)"
             rep = r"NO['\1']"
             for k,v in NO.items():
-                if isinstance(v, str):
+                if isinstance(v, str) or isinstance(v, unicode):
                     eq = re.sub(pat, rep, v)
                     x['networkObjects'][k] = eval(eq)
 
@@ -135,6 +135,15 @@ class ScriptWriter:
         self.f.write('{indent}useTestingSet {name}\n'.format(
             indent=INDENT,
             name=setName
+            )
+        )
+
+    def testErrAccRT(self, fhandle, groups=0):
+        INDENT = self.indent * self.indentchar
+        self.f.write('{indent}testErrAccRT ${f} {g}\n'.format(
+            indent=INDENT,
+            f=fhandle,
+            g=groups
             )
         )
 
