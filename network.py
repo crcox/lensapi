@@ -7,29 +7,42 @@ def writeNetworkDefinition(jdat,f):
         ))
 
 def writeLayerDefinitions(jdat,f):
-    for key, attr in jdat['layers'].items():
+    for layer in jdat['layers']:
         line = 'addGroup {layerName:s} {nunits:d}'.format(
-                layerName=key,
-                nunits=attr.get('nunits')
+                layerName=layer['name'],
+                nunits=layer['nunits']
                 )
-        if attr['type'] == 'INPUT':
+        if layer['type'] == 'INPUT':
             line = line + ' {layerType:s}'.format(
-                    layerType=attr.get('type').upper()
+                    layerType=layer['type'].upper()
                     )
-        elif attr['type'] == 'OUTPUT':
+        elif layer['type'] == 'OUTPUT':
             line = line + ' {layerType:s} {errType:s}'.format(
-                    layerType=attr.get('type').upper(),
-                    errType=attr.get('errorType','CROSS_ENTROPY')
+                    layerType=layer.get('type').upper(),
+                    errType=layer.get('errorType','CROSS_ENTROPY')
                     )
-            if attr.get('biased',True):
+            if layer.get('biased',True):
                 line = line + ' +BIASED'
             else:
                 line = line + ' -BIASED'
-        elif attr['type'] == 'HIDDEN':
-            if attr.get('biased',True):
+        elif layer['type'] == 'HIDDEN':
+            if layer.get('biased',True):
                 line = line + ' +BIASED'
             else:
                 line = line + ' -BIASED'
+        try:
+            if layer['useHistory']:
+                line = line + ' USE_OUTPUT_HIST'
+                if layer['type'] == 'OUTPUT':
+                    line = line + ' USE_TARGET_HIST'
+        except KeyError:
+            pass
+        try:
+            if layer['writeOutputs']:
+                line = line + ' WRITE_OUTPUTS'
+        except KeyError:
+            pass
+
         f.write(line+'\n');
 
 def writeConnectivityDefinitions(jdat,f):

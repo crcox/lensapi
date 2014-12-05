@@ -22,46 +22,64 @@ class ScriptWriter:
         self.indentchar=indentchar
         self.mainline = ''
         self.closeline = ''
+        self.chain=False
+        self.closewithnewline=True
 
     def __enter__(self):
         INDENT = self.indent * self.indentchar
-        self.f.write('{i}{m}\n'.format(i=INDENT,m=self.mainline))
+        if self.chain:
+            self.f.write(' {m}\n'.format(m=self.mainline))
+        else:
+            self.f.write('{i}{m}\n'.format(i=INDENT,m=self.mainline))
         self.indent += 1
         return self
 
     def __exit__(self, *args):
         self.indent -= 1
         INDENT = self.indent * self.indentchar
-        self.f.write('{i}}}\n'.format(i=INDENT))
+        if self.closewithnewline:
+            self.f.write('{i}}}\n'.format(i=INDENT))
+        else:
+            self.f.write('{i}}}'.format(i=INDENT))
 
     def while_(self, stoppingCriterion):
+        self.closewithnewline=True
         self.mainline = 'while {{$Test(percentCorrect) < {crit}}} {{'.format(
             crit=stoppingCriterion
         )
+        self.chain=False
         return self
 
     def for_(self,var, init, limit):
+        self.closewithnewline=True
         self.mainline = 'for {{set {i} {init}}} {{${i} <= {limit}}} {{incr {i}}} {{'.format(
             i=var,
             limit=limit,
             init=init
         )
+        self.chain=False
         return self
 
-    def if_(self, condition):
+    def if_(self, condition, closewithnewline=False):
+        self.closewithnewline=closewithnewline
         self.mainline = 'if {{{cond}}} {{'.format(
             cond=condition
         )
+        self.chain=False
         return self
 
-    def elseif_(self, condition):
+    def elseif_(self, condition, closewithnewline):
+        self.closewithnewline=closewithnewline
         self.mainline = 'elseif {{{cond}}} {{'.format(
             cond=condition
         )
+        self.chain=True
         return self
 
     def else_(self):
+        self.closewithnewline=True
         self.mainline = 'else {'
+        self.chain=True
         return self
 
     def setVar(self,variable,value):
