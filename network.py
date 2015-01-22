@@ -40,6 +40,8 @@ def writeLayerDefinitions(jdat,f):
         try:
             if layer['writeOutputs']:
                 line = line + ' WRITE_OUTPUTS'
+            else:
+                line = line + ' -WRITE_OUTPUTS'
         except KeyError:
             pass
 
