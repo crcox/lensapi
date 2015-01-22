@@ -45,11 +45,11 @@ def writeex(f, name, freq, inputs, targets):
                 continue
             val,rep = inp[grp]
             if isinstance(val,basestring):
-                line='\t({g}Input)\n'.format(g=grp)
+                line='\t({g}Input)\n'.format(g=grp.title())
             elif val == 0:
-                line='\t({g}Input)\n'.format(g=grp)
+                line='\t({g}Input)\n'.format(g=grp.title())
             else:
-                line='\t({g}Input) {r}\n'.format(g=grp,r=' '.join([str(x) for x in rep]))
+                line='\t({g}Input) {r}\n'.format(g=grp.title(),r=' '.join([str(x) for x in rep]))
             f.write(line)
 
         if 'context' in inp.keys():
@@ -61,11 +61,11 @@ def writeex(f, name, freq, inputs, targets):
         for grp in TSET:
             val,rep = trg[grp]
             if isinstance(val,basestring):
-                line='\t({g}Output)\n'.format(g=grp)
+                line='\t({g}Output)\n'.format(g=grp.title())
             elif val == 0:
-                line='\t({g}Output)\n'.format(g=grp)
+                line='\t({g}Output)\n'.format(g=grp.title())
             else:
-                line='\t({g}Output) {r}\n'.format(g=grp,r=' '.join([str(x) for x in rep]))
+                line='\t({g}Output) {r}\n'.format(g=grp.title(),r=' '.join([str(x) for x in rep]))
             f.write(line)
     f.write(';\n')
 
