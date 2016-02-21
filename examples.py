@@ -31,8 +31,10 @@ def writeex(f, name, freq, inputs, targets):
 
     name = 'name: {w}\n'.format(w=name)
     freq = 'freq: {f}\n'.format(f=freq)
+    nevents = '{e}\n'.format(e=len(inputs))
     f.write(name)
     f.write(freq)
+    f.write(nevents)
 
     # Loop over events
     for e,(inp,trg) in enumerate(zip(inputs,targets)):
