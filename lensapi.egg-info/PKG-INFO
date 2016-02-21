@@ -1,0 +1,14 @@
+Metadata-Version: 1.1
+Name: lensapi
+Version: 0.0.1
+Summary: Libraries and wrappers for managing AAE modeling.
+Home-page: http://packages.python.org/an_example_pypi_project
+Author: Chris Cox
+Author-email: cox.crc@gmail.com
+License: MIT
+Description: Python libraries to help write files critical to a LENS simulation.
+        
+Keywords: LCNL PDP AAE
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Topic :: Utilities
