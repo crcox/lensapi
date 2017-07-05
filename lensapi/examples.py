@@ -238,13 +238,14 @@ def stimdist(STIM,type_,method='cityblock'):
     import scipy.spatial.distance
     import operator
 
-    def selectAllDist(dist,j):
-        N = len(dist)
-        n = (1 + numpy.sqrt(1+(8*N))) / 2
-        i = numpy.array(range(n))
-        del i[j]
-        ix = N - ((i**2 - i) / 2) + (j-i-1)
-        return dist[ix]
+    # CRC: This does not seem to be used ...
+    # def selectAllDist(dist,j):
+    #     N = len(dist)
+    #     n = (1 + numpy.sqrt(1+(8*N))) / 2
+    #     i = numpy.array(range(n))
+    #     del i[j]
+    #     ix = N - ((i**2 - i) / 2) + (j-i-1)
+    #     return dist[ix]
 
     # All sets have the same semantics, so any will do.
     key = STIM.keys()[0]
