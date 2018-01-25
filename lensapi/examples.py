@@ -1,6 +1,11 @@
 import pickle
 import numpy
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
 def aslist(x):
     if isinstance(x, basestring):
         return [x]
@@ -108,10 +113,10 @@ def buildex(STIM, events, patterns, context, layer, TYPES=None):
     # the case may be) and build up the input/output pattern in the appropriate
     # order.
     for i,event_ in enumerate(events):
-        maps = {patterns[k].keys()[0]:patterns[k].values()[0]
+        maps = {list(patterns[k].keys())[0]:list(patterns[k].values())[0]
                 for k in event_.keys()
                 if k in patterns.keys()}
-        vals = {patterns[k].keys()[0]:event_[k]
+        vals = {list(patterns[k].keys())[0]:event_[k]
                 for k in event_.keys()
                 if k in patterns.keys()}
 
@@ -248,10 +253,16 @@ def stimdist(STIM,type_,method='cityblock'):
     #     return dist[ix]
 
     # All sets have the same semantics, so any will do.
-    key = STIM.keys()[0]
-    words = STIM[key].keys()
+    dialect = STIM.keys()[0]
+    words = []
+    replist = []
+    for E in STIM[dialect]:
+        if not E['word'] in words:
+            words.append(E['word'])
+            replist.append(E[type_])
+
     n = len(words)
-    reps = numpy.array([STIM[key][w][type_] for w in words])
+    reps = numpy.array(list(replist))
     dist = scipy.spatial.distance.pdist(reps,method)
     dist = scipy.spatial.distance.squareform(dist)
     DIST = {}
@@ -266,28 +277,28 @@ def warmstart(STIM,DIST,type_,newfield,knn=0,radius=0):
     import itertools
 
     if not isinstance(type_,basestring):
-        print "'type_' must be a string"
+        print("'type_' must be a string")
         raise TypeError
     if not isinstance(newfield,basestring):
-        print "'newfield' must be a string"
+        print("'newfield' must be a string")
         raise TypeError
 
     # knn and radius are mutually exclusive
     if knn > 0:
-        for key,D in STIM.items():
-            for word, d in D.items():
-                dist = DIST[word]
+        for dialect,examples in STIM.items():
+            for i,E in enumerate(examples):
+                dist = DIST[E['word']]
                 words = dist['words'][0:knn]
-                semreps = numpy.array([D[w][type_] for w in words])
+                semreps = numpy.array([E[type_] for w in words])
                 meanrep = numpy.mean(semreps,0)
-                STIM[key][word][newfield] = meanrep
+                STIM[dialect][i][newfield] = meanrep
 
     elif radius > 0:
-        for key,D in STIM.items():
-            for word, d in D.items():
-                dist = DIST[word]
+        for dialect,examples in STIM.items():
+            for i,E in enumerate(examples):
+                dist = DIST[E['word']]
                 words = [dist['words'][i] for i,d in enumerate(dist['dist']) if d < radius]
-                semreps = numpy.array([D[w][type_] for w in words])
+                semreps = numpy.array([E[type_] for w in words])
                 meanrep = numpy.mean(semreps,0)
                 STIM[key][word][newfield] = meanrep
 
