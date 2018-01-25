@@ -183,6 +183,22 @@ def buildex(STIM, events, patterns, context, layer, TYPES=None):
 
 
 def disambiguate(STIM,HOMO):
+    # This function will modify the phonological input patterns of homophones
+    # so that they are explicitly disambiguated by an index. The function
+    # counts the number of homophones for each phonological form, and adds the
+    # number of units equal to express the number of bits needed to express the
+    # largest index required. If two words have the same pronunciation, then a
+    # single bit (unit) will disambiguate---for one, the unit will be off, and
+    # for the other it will be on. If there are 4 words with the same
+    # pronunciation, then 2 units are needed---both can be off, both can be on,
+    # or one or the other can be on, defining 4 unique states. This approach
+    # keeps the number of units as low as possible, at the expense of adding
+    # some additional structure to the input.
+    #
+    # NB: warmstart is an alternative method for disambiguating homophones,
+    # where some semantic information is injected into the network on all
+    # trials. This is motivated by the tendency for words with the same
+    # pronunciation to have rather different meanings 
     from math import ceil,log
     # Compute max number of homophones for any single phonological
     # represenation
@@ -223,13 +239,14 @@ def stimdist(STIM,type_,method='cityblock'):
     import scipy.spatial.distance
     import operator
 
-    def selectAllDist(dist,j):
-        N = len(dist)
-        n = (1 + numpy.sqrt(1+(8*N))) / 2
-        i = numpy.array(range(n))
-        del i[j]
-        ix = N - ((i**2 - i) / 2) + (j-i-1)
-        return dist[ix]
+    # CRC: This does not seem to be used ...
+    # def selectAllDist(dist,j):
+    #     N = len(dist)
+    #     n = (1 + numpy.sqrt(1+(8*N))) / 2
+    #     i = numpy.array(range(n))
+    #     del i[j]
+    #     ix = N - ((i**2 - i) / 2) + (j-i-1)
+    #     return dist[ix]
 
     # All sets have the same semantics, so any will do.
     key = STIM.keys()[0]

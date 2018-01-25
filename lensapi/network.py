@@ -51,7 +51,8 @@ def writeLayerDefinitions(jdat,f):
 def writeConnectivityDefinitions(jdat,f):
     for attr in jdat['connections']:
         attr['weights'] = attr.get('weights',{})
-        line = 'connectGroups ' + ' '.join(attr.get('pattern'))
+	groups = ['{'+' '.join(y)+'}' if isinstance(y, list) else y for y in attr.get('pattern')]
+        line = 'connectGroups ' + ' '.join(groups)
         line = line + ' -projection {pType:s} -mean {mean:d} -range {range:d}'.format(
                 pType=attr.get('projection','FULL'),
                 mean=attr['weights'].get('mean',0),
@@ -59,4 +60,7 @@ def writeConnectivityDefinitions(jdat,f):
                 )
         if attr['weights'].get('bidirectional',False):
             line = line + ' -bidirectional'
+	strength = attr['weights'].get('strength',False):
+        if strength:
+            line = line + ' -s {s:0.4f}'.format(s=strength)
         f.write(line+'\n')
