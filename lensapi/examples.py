@@ -1,3 +1,4 @@
+from __future__ import absolute_import, division, print_function
 import pickle
 import numpy
 
@@ -249,10 +250,10 @@ def warmstart(STIM,DIST,type_,newfield,knn=0,radius=0):
     import itertools
 
     if not isinstance(type_,basestring):
-        print "'type_' must be a string"
+        print("'type_' must be a string")
         raise TypeError
     if not isinstance(newfield,basestring):
-        print "'newfield' must be a string"
+        print("'newfield' must be a string")
         raise TypeError
 
     # knn and radius are mutually exclusive

@@ -1,3 +1,4 @@
+from __future__ import absolute_import, division, print_function
 def writeNetworkDefinition(jdat,f):
     f.write('addNet {name:s} -i {intervals:d} -t {ticks:d} {netType:s}\n'.format(
         name=jdat.get('name'),
